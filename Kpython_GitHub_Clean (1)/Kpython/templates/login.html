@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ 'Create account' if register else 'Sign in' }} · UK used &amp; Second hands Goods</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="login-page">
+  <main class="login-layout">
+    <section class="login-story">
+      <a class="brand brand-light" href="{{ url_for('login') }}" aria-label="UK used & Second hands Goods">
+        <span class="brand-mark">UK</span>
+        <span class="brand-name">UK used &amp;<span>Second hands Goods</span></span>
+      </a>
+      <div class="story-copy">
+        <span class="eyebrow">YOUR STORE, IN GOOD HANDS</span>
+        <h1>Make room<br>for <em>what's next.</em></h1>
+        <p>A calmer way to run the everyday details of your shop.</p>
+      </div>
+      <div class="story-foot"><span>PRODUCTS · INVENTORY · ORDERS</span><span>EST. 2024</span></div>
+    </section>
+    <section class="login-panel">
+      <div class="login-card">
+        <span class="eyebrow">{{ 'CREATE YOUR ACCOUNT' if register else 'WELCOME BACK' }}</span>
+        <h2>{{ 'Create your account' if register else 'Sign in to your store' }}</h2>
+        <p class="muted">{{ 'Set up your store access to get started.' if register else 'Your next good day starts here.' }}</p>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}" role="alert">{{ message }}</div>
+          {% endfor %}
+        {% endwith %}
+        <form method="post" class="form-stack">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <label>Username
+            <input name="username" autocomplete="username" required minlength="3" autofocus placeholder="Your username">
+          </label>
+          <label>Password
+            <input type="password" name="password" autocomplete="{{ 'new-password' if register else 'current-password' }}" required {% if register %}minlength="8"{% endif %} placeholder="Your password">
+          </label>
+          {% if register %}
+            <label>Confirm password
+              <input type="password" name="confirm_password" autocomplete="new-password" required minlength="8" placeholder="Enter your password again">
+            </label>
+          {% endif %}
+          <button class="button button-primary button-wide" type="submit">{{ 'Create account' if register else 'Sign in' }} <span>→</span></button>
+        </form>
+        {% if register %}
+          <p class="login-hint"><a href="{{ url_for('login') }}">Already have an account? Sign in</a></p>
+        {% else %}
+          <p class="login-hint">Sign in with your store administrator account.</p>
+        {% endif %}
+      </div>
+      <span class="login-copyright">UK USED &amp; SECOND HANDS GOODS STORE MANAGEMENT</span>
+    </section>
+  </main>
+</body>
+</html>

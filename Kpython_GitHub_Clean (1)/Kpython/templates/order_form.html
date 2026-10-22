@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Create order{% endblock %}
+{% block breadcrumb %}<a href="{{ url_for('orders') }}">Orders</a> <span>/</span> New order{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <span class="eyebrow">NEW ORDER</span>
+  <h1>Create an order</h1>
+  <p class="muted">Enter customer details and choose products.</p>
+</section>
+<form method="post" class="order-create-layout">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="order-main-column">
+    <section class="panel form-panel">
+      <div class="form-section-heading">
+        <span class="form-step">01</span>
+        <div><h2>Customer</h2><p>Enter the customer's contact details.</p></div>
+      </div>
+      <div class="form-grid">
+        <label>Customer name
+          <input name="customer_name" required maxlength="120" placeholder="Full name">
+        </label>
+        <label>Email address
+          <input type="email" name="customer_email" required maxlength="160" placeholder="name@example.com">
+        </label>
+      </div>
+    </section>
+    <section class="panel form-panel order-items-panel">
+      <div class="form-section-heading">
+        <span class="form-step">02</span>
+        <div><h2>Order items</h2><p>Quantities are checked against available stock.</p></div>
+      </div>
+      <div class="order-product-list">
+        {% for product in products %}
+        <div class="order-product-row">
+          <div class="order-product-thumb">
+            {% if product.image_url %}<img src="{{ product.image_url }}" alt="" loading="lazy">
+            {% else %}<span>{{ product.name[:1] }}</span>{% endif %}
+          </div>
+          <div class="order-product-copy">
+            <strong>{{ product.name }}</strong>
+            <small>{{ product.sku }} · {{ product.stock }} available</small>
+          </div>
+          <strong class="order-unit-price">{{ product.price|money }}</strong>
+          <label class="quantity-field">
+            <span class="sr-only">Quantity for {{ product.name }}</span>
+            <input type="number" min="0" max="{{ product.stock }}" value="0" name="quantity_{{ product.id }}" data-price="{{ product.price }}">
+          </label>
+        </div>
+        {% else %}
+        <p class="empty-state">No products currently have available stock.</p>
+        {% endfor %}
+      </div>
+    </section>
+  </div>
+  <aside class="order-summary panel">
+    <span class="eyebrow">ORDER SUMMARY</span>
+    <h2>Review order</h2>
+    <p>Inventory is deducted when the order is saved.</p>
+    <div class="summary-divider"></div>
+    <div class="summary-line">
+      <span>Items selected</span><strong id="item-count">0</strong>
+    </div>
+    <div class="summary-line summary-total">
+      <span>Estimated total</span><strong id="order-total">NGN 0</strong>
+    </div>
+    <button class="button button-primary button-wide" type="submit">Create order</button>
+    <a class="cancel-link" href="{{ url_for('orders') }}">Cancel and go back</a>
+  </aside>
+</form>
+{% endblock %}

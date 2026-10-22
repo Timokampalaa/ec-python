@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Edit product' if product else 'New product' }}{% endblock %}
+{% block breadcrumb %}<a href="{{ url_for('products') }}">Products</a> <span>/</span> {{ 'Edit product' if product else 'New product' }}{% endblock %}
+{% block content %}
+<section class="page-heading">
+  <span class="eyebrow">CATALOG</span>
+  <h1>{{ 'Edit product' if product else 'Add a product' }}</h1>
+</section>
+<section class="form-layout">
+  <form class="panel form-panel" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-section-heading">
+      <span class="form-step">01</span>
+      <div><h2>Product details</h2><p>Enter the item details and price.</p></div>
+    </div>
+    <div class="form-grid">
+      <label class="field-span-2">Product name
+        <input name="name" required maxlength="120" value="{{ product.name if product else '' }}" placeholder="e.g. Running shoes">
+      </label>
+      <label>SKU
+        <input name="sku" required maxlength="40" value="{{ product.sku if product else '' }}" placeholder="e.g. P001">
+      </label>
+      <label>Category
+        <input name="category" required maxlength="60" value="{{ product.category if product else '' }}" placeholder="e.g. Footwear">
+      </label>
+      <label>Price <span class="field-suffix">NGN</span>
+        <input type="number" name="price" required min="0" step="0.01" value="{{ product.price if product else '' }}" placeholder="0.00">
+      </label>
+      <label>Image path or URL <span class="optional-label">OPTIONAL</span>
+        <input type="text" name="image_url" value="{{ product.image_url if product else '' }}" placeholder="/images/product.jpg">
+      </label>
+    </div>
+    <div class="form-section-heading inventory-form-heading">
+      <span class="form-step">02</span>
+      <div><h2>Inventory</h2><p>Set the quantity and low-stock alert.</p></div>
+    </div>
+    <div class="form-grid">
+      <label>Available stock
+        <input type="number" name="stock" required min="0" step="1" value="{{ product.stock if product else 0 }}">
+      </label>
+      <label>Low-stock alert at
+        <input type="number" name="reorder_level" required min="0" step="1" value="{{ product.reorder_level if product else 5 }}">
+      </label>
+    </div>
+    <div class="form-actions">
+      <a class="button button-secondary" href="{{ url_for('products') }}">Cancel</a>
+      <button class="button button-primary" type="submit">{{ 'Save changes' if product else 'Add product' }}</button>
+    </div>
+  </form>
+  <aside class="form-aside">
+    <span class="aside-mark">✳</span>
+    <h3>Product photo</h3>
+    <p>Photos from the project image folder use paths like <code>/images/product.jpg</code>.</p>
+  </aside>
+</section>
+{% endblock %}

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f6f1">
+  <title>{% block title %}Overview{% endblock %} · UK used &amp; Second hands Goods</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="{{ url_for('dashboard') }}" aria-label="UK used & Second hands Goods dashboard">
+        <span class="brand-mark">UK</span><span class="brand-name">UK used &amp;<span>Second hands Goods</span></span>
+      </a>
+      <div class="store-switch"><span class="store-avatar">S</span><span><strong>Studio Store</strong><small>Primary workspace</small></span><span class="chevron">⌄</span></div>
+      <p class="nav-label">WORKSPACE</p>
+      <nav class="primary-nav" aria-label="Main navigation">
+        <a class="nav-link {% if active_page == 'dashboard' %}is-active{% endif %}" href="{{ url_for('dashboard') }}"><span class="nav-icon">⌂</span>Overview</a>
+        <a class="nav-link {% if active_page in ['products', 'new_product', 'edit_product'] %}is-active{% endif %}" href="{{ url_for('products') }}"><span class="nav-icon">▦</span>Products</a>
+        <a class="nav-link {% if active_page == 'inventory' %}is-active{% endif %}" href="{{ url_for('inventory') }}"><span class="nav-icon">▤</span>Inventory <span class="nav-count">{{ nav_low_stock|default(0) }}</span></a>
+        <a class="nav-link {% if active_page in ['orders', 'new_order', 'order_detail'] %}is-active{% endif %}" href="{{ url_for('orders') }}"><span class="nav-icon">↗</span>Orders</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="help-note"><span class="help-spark">✳</span><strong>Small shop, big plans.</strong><p>Your next great selling day starts with a well-stocked shelf.</p><a href="{{ url_for('inventory') }}">Check your stock <span>→</span></a></div>
+        <div class="profile-row"><span class="profile-avatar">{{ session.get('username', 'A')[:1]|upper }}</span><span class="profile-text"><strong>{{ session.get('username', 'Admin') }}</strong><small>Store admin</small></span><form action="{{ url_for('logout') }}" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="icon-button logout-button" type="submit" title="Sign out" aria-label="Sign out">↗</button></form></div>
+      </div>
+    </aside>
+    <main class="main-area">
+      <header class="topbar"><button class="icon-button menu-toggle" id="menu-toggle" type="button" aria-label="Open navigation">☰</button><div class="breadcrumb">Workspace <span>/</span> <strong>{% block breadcrumb %}Overview{% endblock %}</strong></div><div class="topbar-actions"><span class="today-label">{{ current_year }}</span><span class="topbar-avatar">{{ session.get('username', 'A')[:1]|upper }}</span></div></header>
+      <div class="page-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-stack">{% for category, message in messages %}<div class="flash flash-{{ category }}" role="status"><span>{{ '✓' if category == 'success' else '!' }}</span>{{ message }}<button class="flash-close" type="button" aria-label="Dismiss">×</button></div>{% endfor %}</div>{% endif %}{% endwith %}
+        {% block content %}{% endblock %}
+      </div>
+      <footer class="page-footer"><span>UK USED &amp; SECOND HANDS GOODS · STORE OPERATIONS</span><span>© {{ current_year }}</span></footer>
+    </main>
+  </div>
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</body>
+</html>
